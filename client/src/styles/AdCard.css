@@ -1,0 +1,69 @@
+.ad-card {
+	width: 28%;
+	background-color: #f9f9f9;
+	border-radius: 16px;
+	padding: 16px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin: 17px;
+}
+
+.ad-content {
+	display: flex;
+	gap: 25px;
+}
+
+.ad-image {
+	width: 180px;
+	height: 150px;
+	border-radius: 12px;
+	background-color: #ddd;
+	object-fit: cover;
+}
+
+.ad-info {
+	display: flex;
+	flex-direction: column;
+	margin-top: 13px;
+	gap: 4px;
+	flex-grow: 1;
+}
+
+.ad-title {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.ad-location,
+.ad-category {
+	font-size: 16px;
+}
+
+.ad-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 10px;
+}
+
+.ad-price {
+	font-size: 16px;
+	font-weight: bold;
+	color: #000;
+}
+
+.ad-button {
+	padding: 8px 12px;
+	font-size: 16px;
+	background-color: #ddd;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+
+.ad-button:hover {
+	background-color: #bbb;
+}
