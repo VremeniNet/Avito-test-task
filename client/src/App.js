@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import ListPage from './pages/ListPage.js'
 import FormPage from './pages/FormPage.js'
 import ItemDetailPage from './pages/ItemDetailPage.js'
-import './App.css'
 
 function App() {
 	return (
