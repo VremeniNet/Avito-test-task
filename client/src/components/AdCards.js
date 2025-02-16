@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react'
 import AdCard from './AdCard.js'
 
 function AdCards({ category, searchTerm }) {
+	// Состояния для хранения объявлений, состояния загрузки, ошибки и текущей страницы
 	const [ads, setAds] = useState([])
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState(null)
 	const [currentPage, setCurrentPage] = useState(1)
-	const adsPerPage = 5
+	const adsPerPage = 5 // Количество объявлений на странице
 
-	// Получаем объявления с сервера
+	// Получение объявлений с сервера
 	useEffect(() => {
 		fetch('http://localhost:3000/items')
 			.then(response => {
@@ -18,7 +19,7 @@ function AdCards({ category, searchTerm }) {
 				return response.json()
 			})
 			.then(data => {
-				setAds(data.reverse()) // Новые объявления первыми
+				setAds(data.reverse())
 				setLoading(false)
 			})
 			.catch(err => {
@@ -36,7 +37,7 @@ function AdCards({ category, searchTerm }) {
 				: true)
 	)
 
-	// Сбрасываем на первую страницу при изменении фильтров
+	// Сбрасывание на первую страницу при изменении фильтров
 	useEffect(() => {
 		setCurrentPage(1)
 	}, [category, searchTerm])
@@ -46,12 +47,14 @@ function AdCards({ category, searchTerm }) {
 	const indexOfFirstAd = indexOfLastAd - adsPerPage
 	const currentAds = filteredAds.slice(indexOfFirstAd, indexOfLastAd)
 
+	// Функция для перехода на следующую страницу
 	const nextPage = () => {
 		if (currentPage < Math.ceil(filteredAds.length / adsPerPage)) {
 			setCurrentPage(prevPage => prevPage + 1)
 		}
 	}
 
+	// Функция для перехода на предыдущую страницу
 	const prevPage = () => {
 		if (currentPage > 1) {
 			setCurrentPage(prevPage => prevPage - 1)

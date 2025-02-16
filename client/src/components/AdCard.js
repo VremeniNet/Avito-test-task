@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import '../styles/AdCard.css'
 
+// Объект с дефолтными изображениями для разных категорий
 const categoryImages = {
 	Авто: '/images/cardImgCar.jpg',
 	Недвижимость: '/images/cardImgProperty.jpg',
@@ -11,6 +12,7 @@ function AdCard({ ad }) {
 	const { id, image, name, location, type, price, cost } = ad
 	const navigate = useNavigate()
 
+	// Функция для перехода на страницу с деталями объявления
 	const handleOpen = () => {
 		navigate(`/item/${id}`)
 	}

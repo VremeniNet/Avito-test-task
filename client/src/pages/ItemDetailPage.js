@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import '../styles/ItemDetailPage.css'
 
+// Объект с изображениями по умолчанию для разных категорий
 const categoryImages = {
 	Авто: '/images/cardImgCar.jpg',
 	Недвижимость: '/images/cardImgProperty.jpg',
@@ -36,9 +37,10 @@ function ItemDetailPage() {
 
 	// Переход к редактированию объявления
 	const handleEdit = () => {
-		navigate('/form', { state: { ad } }) // Передаём объявление в форму
+		navigate('/form', { state: { ad } })
 	}
 
+	// Функция для возврата на главную страницу
 	const handleGoBack = () => {
 		navigate('/list')
 	}
@@ -49,14 +51,13 @@ function ItemDetailPage() {
 	return (
 		<div className='item-detail-container'>
 			<div className='item-box'>
-				{/* Фото объявления */}
 				<div className='image-section'>
 					<img
 						src={ad.image || categoryImages[ad.type]}
 						alt={ad.name}
 						className='item-image'
 					/>
-					{/* Дополнительная информация по категории под фото */}
+
 					<div className='category-details'>
 						{ad.type === 'Недвижимость' && (
 							<>
@@ -111,7 +112,6 @@ function ItemDetailPage() {
 					</div>
 				</div>
 
-				{/* Основная информация справа от фото */}
 				<div className='info-section'>
 					<h1>{ad.name}</h1>
 					<p>

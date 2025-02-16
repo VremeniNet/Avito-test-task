@@ -4,8 +4,8 @@ function SearchContainer({ searchTerm, setSearchTerm }) {
 	const [inputValue, setInputValue] = useState(searchTerm)
 
 	const handleSearch = () => {
-		setSearchTerm(inputValue) // Передаём в ListPage
-		setInputValue('') // Очищаем поле поиска
+		setSearchTerm(inputValue) // Передаётся в ListPage
+		setInputValue('') // Очищается поле поиска
 	}
 
 	return (

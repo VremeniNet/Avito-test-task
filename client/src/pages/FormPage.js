@@ -7,7 +7,10 @@ function FormPage() {
 	const location = useLocation()
 	const existingAd = location.state?.ad // Получаем объявление, если оно передано
 
+	// Состояние для отслеживания текущего шага формы
 	const [step, setStep] = useState(1)
+
+	// Начальное состояние формы, включая поля для разных категорий
 	const [formData, setFormData] = useState({
 		category: '',
 		name: '',
@@ -28,7 +31,7 @@ function FormPage() {
 		workSchedule: '',
 	})
 
-	// Если объявление передано, заполняем форму его данными
+	// Если объявление передано, форма заполняется данными
 	useEffect(() => {
 		if (existingAd) {
 			setFormData({
@@ -109,8 +112,8 @@ function FormPage() {
 		try {
 			const method = existingAd ? 'PUT' : 'POST'
 			const url = existingAd
-				? `http://localhost:3000/items/${existingAd.id}`
-				: 'http://localhost:3000/items'
+				? `http://localhost:3000/items/${existingAd.id}` // если объявление обновляется
+				: 'http://localhost:3000/items' // если создаётся новое объявление
 
 			const response = await fetch(url, {
 				method,

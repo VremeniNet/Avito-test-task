@@ -14,10 +14,10 @@ function ListPage() {
 	const [category, setCategory] = useState('')
 	const [searchTerm, setSearchTerm] = useState('')
 
-	// Обновляем фильтр категории и сбрасываем поиск
+	// Обновление фильтра категории и сбрасывание поиска
 	const handleCategoryChange = newCategory => {
 		setCategory(newCategory)
-		setSearchTerm('') // Сбрасываем поиск при изменении категории
+		setSearchTerm('')
 	}
 
 	return (
