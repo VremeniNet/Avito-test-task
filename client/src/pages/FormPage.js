@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import '../styles/FormPage.css'
 
 function FormPage() {
 	const navigate = useNavigate()
+	const location = useLocation()
+	const existingAd = location.state?.ad // Получаем объявление, если оно передано
+
 	const [step, setStep] = useState(1)
 	const [formData, setFormData] = useState({
 		category: '',
@@ -11,7 +14,6 @@ function FormPage() {
 		description: '',
 		location: '',
 		image: null,
-		// Дополнительные поля для второй части
 		propertyType: '',
 		area: '',
 		rooms: '',
@@ -26,13 +28,35 @@ function FormPage() {
 		workSchedule: '',
 	})
 
-	// Изменение полей
+	// Если объявление передано, заполняем форму его данными
+	useEffect(() => {
+		if (existingAd) {
+			setFormData({
+				category: existingAd.type || '',
+				name: existingAd.name || '',
+				description: existingAd.description || '',
+				location: existingAd.location || '',
+				image: existingAd.image || null,
+				propertyType: existingAd.propertyType || '',
+				area: existingAd.area || '',
+				rooms: existingAd.rooms || '',
+				price: existingAd.price || '',
+				brand: existingAd.brand || '',
+				model: existingAd.model || '',
+				year: existingAd.year || '',
+				mileage: existingAd.mileage || '',
+				serviceType: existingAd.serviceType || '',
+				experience: existingAd.experience || '',
+				cost: existingAd.cost || '',
+				workSchedule: existingAd.workSchedule || '',
+			})
+		}
+	}, [existingAd])
+
+	// Обработчик изменения полей
 	const handleChange = e => {
 		const { name, value } = e.target
-		setFormData(prev => ({
-			...prev,
-			[name]: value,
-		}))
+		setFormData(prev => ({ ...prev, [name]: value }))
 	}
 
 	// Загрузка изображения
@@ -50,7 +74,7 @@ function FormPage() {
 		setStep(2)
 	}
 
-	// Отправка формы на сервер
+	// Отправка формы (создание или обновление)
 	const handleSubmit = async e => {
 		e.preventDefault()
 
@@ -59,8 +83,9 @@ function FormPage() {
 			description: formData.description,
 			location: formData.location,
 			type: formData.category,
-			image: formData.image ? URL.createObjectURL(formData.image) : null,
-			// Добавляем данные второй части формы
+			image: formData.image
+				? URL.createObjectURL(formData.image)
+				: existingAd?.image || null,
 			...(formData.category === 'Недвижимость' && {
 				propertyType: formData.propertyType,
 				area: formData.area,
@@ -82,16 +107,21 @@ function FormPage() {
 		}
 
 		try {
-			const response = await fetch('http://localhost:3000/items', {
-				method: 'POST',
+			const method = existingAd ? 'PUT' : 'POST'
+			const url = existingAd
+				? `http://localhost:3000/items/${existingAd.id}`
+				: 'http://localhost:3000/items'
+
+			const response = await fetch(url, {
+				method,
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(adData),
 			})
 
-			if (!response.ok) throw new Error('Ошибка при создании объявления')
+			if (!response.ok) throw new Error('Ошибка при сохранении объявления')
 
-			console.log('Объявление создано')
-			navigate('/list')
+			console.log(existingAd ? 'Объявление обновлено' : 'Объявление создано')
+			navigate('/list') // Переход к списку объявлений
 		} catch (error) {
 			console.error('Ошибка:', error)
 		}
@@ -100,7 +130,9 @@ function FormPage() {
 	return (
 		<div className='form-page-container'>
 			<div className='form-box'>
-				<h1>Создать объявление</h1>
+				<h1>
+					{existingAd ? 'Редактировать объявление' : 'Создать объявление'}
+				</h1>
 
 				{step === 1 && (
 					<form onSubmit={handleNextStep}>
@@ -165,17 +197,14 @@ function FormPage() {
 					<form onSubmit={handleSubmit}>
 						{formData.category === 'Недвижимость' && (
 							<>
-								<select
+								<input
+									type='text'
 									name='propertyType'
+									placeholder='Тип недвижимости'
 									value={formData.propertyType}
 									onChange={handleChange}
 									required
-								>
-									<option value=''>Тип недвижимости</option>
-									<option value='Квартира'>Квартира</option>
-									<option value='Дом'>Дом</option>
-									<option value='Коттедж'>Коттедж</option>
-								</select>
+								/>
 								<input
 									type='number'
 									name='area'
@@ -205,17 +234,14 @@ function FormPage() {
 
 						{formData.category === 'Авто' && (
 							<>
-								<select
+								<input
+									type='text'
 									name='brand'
+									placeholder='Марка'
 									value={formData.brand}
 									onChange={handleChange}
 									required
-								>
-									<option value=''>Марка</option>
-									<option value='Audi'>Audi</option>
-									<option value='BMW'>BMW</option>
-									<option value='Toyota'>Toyota</option>
-								</select>
+								/>
 								<input
 									type='text'
 									name='model'
@@ -244,17 +270,14 @@ function FormPage() {
 
 						{formData.category === 'Услуги' && (
 							<>
-								<select
+								<input
+									type='text'
 									name='serviceType'
+									placeholder='Тип услуги'
 									value={formData.serviceType}
 									onChange={handleChange}
 									required
-								>
-									<option value=''>Тип услуги</option>
-									<option value='Ремонт'>Ремонт</option>
-									<option value='Уборка'>Уборка</option>
-									<option value='Доставка'>Доставка</option>
-								</select>
+								/>
 								<input
 									type='number'
 									name='experience'
@@ -281,7 +304,9 @@ function FormPage() {
 							</>
 						)}
 
-						<button type='submit'>Создать объявление</button>
+						<button type='submit'>
+							{existingAd ? 'Сохранить' : 'Создать объявление'}
+						</button>
 					</form>
 				)}
 			</div>

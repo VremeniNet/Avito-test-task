@@ -12,16 +12,23 @@ function ListPage() {
 	}
 
 	const [category, setCategory] = useState('')
+	const [searchTerm, setSearchTerm] = useState('')
+
+	// Обновляем фильтр категории и сбрасываем поиск
+	const handleCategoryChange = newCategory => {
+		setCategory(newCategory)
+		setSearchTerm('') // Сбрасываем поиск при изменении категории
+	}
 
 	return (
 		<div className='list-page-container'>
-			<SearchContainer />
-			<Filters setCategory={setCategory} />
+			<SearchContainer searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+			<Filters setCategory={handleCategoryChange} />
 			<h1>Список объявлений</h1>
 			<button className='add-button' onClick={goToFormPage}>
 				Создать объявление
 			</button>
-			<AdCards category={category} />
+			<AdCards category={category} searchTerm={searchTerm} />
 		</div>
 	)
 }

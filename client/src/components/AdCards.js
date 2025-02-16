@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import AdCard from './AdCard.js'
 
-function AdCards({ category }) {
+function AdCards({ category, searchTerm }) {
 	const [ads, setAds] = useState([])
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState(null)
@@ -18,7 +18,7 @@ function AdCards({ category }) {
 				return response.json()
 			})
 			.then(data => {
-				setAds(data.reverse()) // Переворачиваем, чтобы новые объявления были первыми
+				setAds(data.reverse()) // Новые объявления первыми
 				setLoading(false)
 			})
 			.catch(err => {
@@ -27,20 +27,25 @@ function AdCards({ category }) {
 			})
 	}, [])
 
-	// Фильтрация по категории
-	const filteredAds = category ? ads.filter(ad => ad.type === category) : ads
+	// Фильтрация по категории и названию
+	const filteredAds = ads.filter(
+		ad =>
+			(category ? ad.type === category : true) &&
+			(searchTerm
+				? ad.name.toLowerCase().includes(searchTerm.toLowerCase())
+				: true)
+	)
 
-	// Обновление номера страницы при изменении фильтра
+	// Сбрасываем на первую страницу при изменении фильтров
 	useEffect(() => {
-		setCurrentPage(1) // Сброс на первую страницу при выборе новой категории
-	}, [category])
+		setCurrentPage(1)
+	}, [category, searchTerm])
 
 	// Пагинация
 	const indexOfLastAd = currentPage * adsPerPage
 	const indexOfFirstAd = indexOfLastAd - adsPerPage
 	const currentAds = filteredAds.slice(indexOfFirstAd, indexOfLastAd)
 
-	// Функции переключения страниц
 	const nextPage = () => {
 		if (currentPage < Math.ceil(filteredAds.length / adsPerPage)) {
 			setCurrentPage(prevPage => prevPage + 1)
@@ -53,14 +58,11 @@ function AdCards({ category }) {
 		}
 	}
 
-	// Если идёт загрузка
 	if (loading) return <p>Загрузка объявлений...</p>
 
-	// Если произошла ошибка
 	if (error) return <p>Ошибка: {error}</p>
 
-	// Если нет объявлений после фильтрации
-	if (filteredAds.length === 0) return <p>Нет объявлений в этой категории</p>
+	if (filteredAds.length === 0) return <p>Нет объявлений по этому запросу</p>
 
 	return (
 		<>
